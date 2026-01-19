@@ -22,6 +22,16 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.javadoc {
+    // Kotlin DSL; cast to StandardJavadocDocletOptions for more options
+    (options as StandardJavadocDocletOptions).apply {
+        encoding = "UTF-8"
+        charSet = "UTF-8"
+        // Link to JDK 21 API docs
+        links("https://docs.oracle.com/en/java/javase/21/docs/api/")
+    }
+}
+
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))

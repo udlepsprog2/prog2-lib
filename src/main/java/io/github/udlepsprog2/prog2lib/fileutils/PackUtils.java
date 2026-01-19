@@ -1,11 +1,24 @@
 package io.github.udlepsprog2.prog2lib.fileutils;
 
 /**
- * This class provides static methods for packing and unpacking
- * some primitive types (char, int, long, and double) and Strings
- * (limiting their maximum length).
- * The ordering of bytes has been chosen to be the same, when possible,
- * as that used by classes java.io.DataOutput and java.io.DataInput.
+ * Utility methods to pack and unpack primitive values and simple strings
+ * to/from a byte array using Big-Endian (most significant byte first) order.
+ * <p>
+ * Supported types: {@code boolean}, {@code byte}, {@code char}, {@code short},
+ * {@code int}, {@code long}, {@code float}, {@code double}, and Strings with a
+ * fixed maximum length (packed as {@code maxLength} UTF-16 code units with a
+ * Big-Endian char layout and an optional null terminator when shorter).
+ * </p>
+ * <p>
+ * Buffer and offset requirements: callers must provide a non-null {@code buffer}
+ * large enough to hold the value(s) starting at {@code offset}. No explicit
+ * validation is performed; invalid inputs may result in
+ * {@link NullPointerException} or {@link ArrayIndexOutOfBoundsException}.
+ * </p>
+ * <p>
+ * Endianness: all multi-byte types use Big-Endian byte order, matching
+ * {@link java.io.DataOutput} / {@link java.io.DataInput} conventions.
+ * </p>
  *
  * @author jmgimeno
  */
@@ -13,11 +26,52 @@ package io.github.udlepsprog2.prog2lib.fileutils;
 public class PackUtils {
 
     /**
-     * Writes a boolean in the given position of the given byte array.
+     * Size in bytes of a packed boolean value. Booleans are encoded as a single byte: {@code 1} for
+     * {@code true} and {@code 0} for {@code false}.
+     */
+    public static final int SIZEOF_BOOLEAN = 1;
+    /**
+     * Size in bytes of a single {@code byte} value.
+     */
+    public static final int SIZEOF_BYTE    = 1;
+    /**
+     * Size in bytes of a Java {@code char} (one UTF-16 code unit). Packed in Big-Endian order.
+     */
+    public static final int SIZEOF_CHAR    = 2;
+    /**
+     * Size in bytes of a {@code short}. Packed in Big-Endian order.
+     */
+    public static final int SIZEOF_SHORT   = 2;
+    /**
+     * Size in bytes of an {@code int}. Packed in Big-Endian order.
+     */
+    public static final int SIZEOF_INT     = 4;
+    /**
+     * Size in bytes of a {@code long}. Packed in Big-Endian order.
+     */
+    public static final int SIZEOF_LONG    = 8;
+    /**
+     * Size in bytes of a {@code float} when represented using its IEEE 754 bit pattern
+     * (via {@link Float#floatToIntBits(float)}).
+     */
+    public static final int SIZEOF_FLOAT   = 4;
+    /**
+     * Size in bytes of a {@code double} when represented using its IEEE 754 bit pattern
+     * (via {@link Double#doubleToLongBits(double)}).
+     */
+    public static final int SIZEOF_DOUBLE  = 8;
+
+    private PackUtils() { }
+
+    /**
+     * Writes a boolean value at {@code buffer[offset]}.
+     * <p>Encoding: {@code true → 1}, {@code false → 0}.</p>
      *
-     * @param b the boolean to be written on the buffer at position offset
-     * @param buffer the byte array where the boolean is to be written
-     * @param offset the position in the array where the boolean is written
+     * @param b the value to write
+     * @param buffer destination byte array (must be non-null)
+     * @param offset index at which to write (must be within bounds)
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if {@code offset} is out of range
      */
     public static void packBoolean(boolean b, byte[] buffer, int offset) {
         if (b) {
@@ -28,24 +82,29 @@ public class PackUtils {
     }
 
     /**
-     * Reads a boolean from the given position of the given byte array.
+     * Reads a boolean from {@code buffer[offset]}.
+     * <p>Decoding: returns {@code true} iff the stored byte equals {@code 1};
+     * any other value yields {@code false}.</p>
      *
-     * @param buffer the byte array from where the boolean is to be read
-     * @param offset the position in the array where the boolean is read
-     * @return the boolean that has been read
+     * @param buffer source byte array (must be non-null)
+     * @param offset index from which to read (must be within bounds)
+     * @return {@code true} if the byte is {@code 1}; {@code false} otherwise
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if {@code offset} is out of range
      */
     public static boolean unpackBoolean(byte[] buffer, int offset) {
         return buffer[offset] == (byte) 1;
     }
 
-     /**
-     * Writes a char in the two bytes starting at the given position
-     * of the given byte array.
-     * The char is laid out with the most significant byte first in the array.
+    /**
+     * Writes a {@code char} (16-bit unsigned UTF-16 code unit) to
+     * {@code buffer[offset..offset+1]} in Big-Endian order.
      *
-     * @param c the char to be written on the buffer beginning at the position offset
-     * @param buffer the byte array where the boolean is to be written
-     * @param offset the starting position in the array where the char is written
+     * @param c the char to write
+     * @param buffer destination array (must be non-null)
+     * @param offset starting index (must allow two bytes)
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static void packChar(char c, byte[] buffer, int offset) {
         buffer[offset    ] = (byte) (c >> 8);
@@ -53,49 +112,66 @@ public class PackUtils {
     }
 
     /**
-     * Reads a char in the two bytes starting at the given position in the given array.
-     * The char is laid out with the most significant byte first in the array.
+     * Reads a {@code char} from {@code buffer[offset..offset+1]} in Big-Endian order.
      *
-     * @param buffer the byte array from where the char is to be read
-     * @param offset the position in the array where the char is read
-     * @return the char that has been read
+     * @param buffer source array (must be non-null)
+     * @param offset starting index (must allow two bytes)
+     * @return the decoded char
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static char unpackChar(byte[] buffer, int offset) {
         return (char) (buffer[offset    ] << 8 |
                        buffer[offset + 1] & 0xFF);
     }
 
-     /**
-     * Writes a byte in the given position of the given byte array.
+    /**
+     * Writes a byte at {@code buffer[offset]}.
      *
-     * @param b the byte to be written on the buffer beginning at the position offset
-     * @param buffer the byte array where the byte is to be written
-     * @param offset the position in the array where the byte is written
+     * @param b the byte to write
+     * @param buffer the destination array
+     * @param offset the index at which to write
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if {@code offset} is out of range
      */
     public static void packByte(byte b, byte[] buffer, int offset) {
         buffer[offset] = b;
     }
 
     /**
-     * Reads a byte in the given position in the given array.
+     * Reads a byte from {@code buffer[offset]}.
      *
-     * @param buffer the byte array from where the byte is to be read
-     * @param offset the position in the array where the byte is read
+     * @param buffer the source array
+     * @param offset the index from which to read
      * @return the byte that has been read
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if {@code offset} is out of range
      */
     public static byte unpackByte(byte[] buffer, int offset) {
         return buffer[offset];
     }
 
     /**
-     * Writes, al most, the first maxLength characters of the String starting
-     * at the given position in the given array.
+     * Writes at most {@code maxLength} characters of {@code str} starting at
+     * {@code buffer[offset]}, using the same layout as {@link #packChar(char, byte[], int)}
+     * (UTF-16 code units, Big-Endian, 2 bytes per char).
+     * <p>
+     * If {@code str.length() < maxLength}, a null terminator ({@code '\0'}) is written
+     * immediately after the last character and no further bytes are modified.
+     * If {@code str.length() > maxLength}, the string is truncated to {@code maxLength}
+     * characters and no terminator is written.
+     * No length prefix is stored; callers must pass the same {@code maxLength} when unpacking.
+     * </p>
+     * <p>
+     * Buffer requirement: at least {@code 2 * maxLength} bytes are needed starting at {@code offset}.
+     * </p>
      *
-     * @param str the string from which the characters are read
-     * @param maxLength the maximum number of characters to consider
-     * @param buffer the byte array where the characters are written
-     * @param offset the starting position in the array where the characters are
-     * written.
+     * @param str the source string (must be non-null)
+     * @param maxLength maximum number of characters to write (code units)
+     * @param buffer destination array
+     * @param offset starting index
+     * @throws NullPointerException if {@code buffer} or {@code str} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
 
     public static void packLimitedString(
@@ -113,38 +189,40 @@ public class PackUtils {
     }
 
     /**
-     * Reads, at most, maxLength characters tarting at the given position in
-     * the given array.
+     * Reads at most {@code maxLength} characters starting at {@code buffer[offset]}
+     * using the same char layout as {@link #unpackChar(byte[], int)}. Reading stops
+     * when either {@code maxLength} characters are read or a null terminator ({@code '\0'})
+     * is encountered, whichever comes first.
      *
-     * @param maxLength the maximum number of characters to consider
-     * @param buffer the byte array from where the characters are to be read
-     * @param offset the starting position in the array from where the
-     * characters are read.
-     * @return the String that has been read.
+     * @param maxLength maximum number of characters to read
+     * @param buffer source array
+     * @param offset starting index
+     * @return the decoded string
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space to read
      */
     public static String unpackLimitedString(
             int maxLength, byte[] buffer, int offset) {
-
-        String result = "";
+        StringBuilder sb = new StringBuilder(Math.min(maxLength, 16));
         for (int i = 0; i < maxLength; i++ ) {
-            char c = unpackChar(buffer, offset+2*i);
-            if ( c != '\0' ) {
-                result += c;
+            char c = unpackChar(buffer, offset + 2 * i);
+            if (c != '\0') {
+                sb.append(c);
             } else {
                 break;
             }
         }
-        return result;
+        return sb.toString();
     }
 
     /**
-     * Writes an int in the four bytes starting at the given position
-     * of the given byte array.
-     * The int is laid out with the most significant byte first in the array.
+     * Writes an {@code int} to {@code buffer[offset..offset+3]} in Big-Endian order.
      *
-     * @param n the int to be written on the buffer beginning at the position offset
-     * @param buffer the byte array where the int is to be written
-     * @param offset the starting position in the array where the int is written
+     * @param n the int to be written
+     * @param buffer the destination array
+     * @param offset the starting position (must allow four bytes)
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
 
     public static void packInt(int n, byte[] buffer, int offset ) {
@@ -155,12 +233,13 @@ public class PackUtils {
     }
 
     /**
-     * Reads an int in the four bytes starting at the given position in the given array.
-     * The int is laid out with the most significant byte first in the array.
+     * Reads an {@code int} from {@code buffer[offset..offset+3]} in Big-Endian order.
      *
-     * @param buffer the byte array from where the int is to be read
-     * @param offset the position in the array where the int is read
+     * @param buffer the source array
+     * @param offset the starting position (must allow four bytes)
      * @return the int that has been read
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
 
     public static int unpackInt(byte[] buffer, int offset) {
@@ -171,13 +250,13 @@ public class PackUtils {
     }
 
     /**
-     * Writes a short in the two bytes starting at the given position
-     * of the given byte array.
-     * The short is laid out with the most significant byte first in the array.
+     * Writes a {@code short} to {@code buffer[offset..offset+1]} in Big-Endian order.
      *
-     * @param s the short to be written on the buffer beginning at the position offset
-     * @param buffer the byte array where the short is to be written
-     * @param offset the starting position in the array where the short is written
+     * @param s the short to be written
+     * @param buffer the destination array
+     * @param offset the starting position (must allow two bytes)
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static void packShort(short s, byte[] buffer, int offset ) {
         buffer[offset    ] = (byte) (s >>  8);
@@ -185,12 +264,13 @@ public class PackUtils {
     }
 
     /**
-     * Reads an int in the four bytes starting at the given position in the given array.
-     * The int is laid out with the most significant byte first in the array.
+     * Reads a {@code short} from {@code buffer[offset..offset+1]} in Big-Endian order.
      *
-     * @param buffer the byte array from where the int is to be read
-     * @param offset the position in the array where the int is read
-     * @return the int that has been read
+     * @param buffer the source array
+     * @param offset the starting position (must allow two bytes)
+     * @return the short that has been read
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static short unpackShort(byte[] buffer, int offset) {
         return (short) (((buffer[offset    ]   <<  8) |
@@ -198,13 +278,13 @@ public class PackUtils {
     }
 
     /**
-     * Writes a long in the eight bytes starting at the given position
-     * of the given byte array.
-     * The char is laid out with the most significant byte first in the array.
+     * Writes a {@code long} to {@code buffer[offset..offset+7]} in Big-Endian order.
      *
-     * @param n the char to be written on the buffer beginning at the position offset
-     * @param buffer the byte array where the char is to be written
-     * @param offset the starting position in the array where the char is written
+     * @param n the long to be written
+     * @param buffer the destination array
+     * @param offset the starting position (must allow eight bytes)
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static void packLong(long n, byte[] buffer, int offset)  {
         buffer[offset    ] = (byte) (n >> 56);
@@ -218,12 +298,13 @@ public class PackUtils {
     }
 
     /**
-     * Reads a long in the eight bytes starting at the given position in the given array.
-     * The long is laid out with the most significant byte first in the array.
+     * Reads a {@code long} from {@code buffer[offset..offset+7]} in Big-Endian order.
      *
-     * @param buffer the byte array from where the long is to be read
-     * @param offset the position in the array where the long is read
+     * @param buffer the source array
+     * @param offset the starting position (must allow eight bytes)
      * @return the long that has been read
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static long unpackLong(byte[] buffer, int offset) {
         return ((long)(buffer[offset    ]       ) << 56) |
@@ -237,12 +318,15 @@ public class PackUtils {
     }
 
     /**
-     * Writes a float in the four bytes starting at the given position
-     * of the given byte array.
+     * Writes a {@code float} by converting it to its IEEE 754 bit pattern
+     * using {@link Float#floatToIntBits(float)} and packing the resulting int
+     * to {@code buffer[offset..offset+3]} in Big-Endian order.
      *
-     * @param f the float to be written on the buffer beginning at the position offset
-     * @param buffer the byte array where the float is to be written
-     * @param offset the starting position in the array where the float is written
+     * @param f the float to be written
+     * @param buffer the destination array
+     * @param offset the starting position (must allow four bytes)
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static void packFloat(float f, byte[] buffer, int offset) {
         int bits = Float.floatToIntBits(f);
@@ -250,12 +334,15 @@ public class PackUtils {
     }
 
     /**
-     * Reads a float in the four bytes starting at the given position in the given array.
-     * The char is laid out with the most significant byte first in the array.
+     * Reads a {@code float} by unpacking an int from
+     * {@code buffer[offset..offset+3]} in Big-Endian order and converting with
+     * {@link Float#intBitsToFloat(int)}.
      *
-     * @param buffer the byte array from where the char is to be read
-     * @param offset the position in the array where the char is read
-     * @return the char that has been read
+     * @param buffer the source array
+     * @param offset the starting position (must allow four bytes)
+     * @return the decoded float
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static float unpackFloat(byte[] buffer, int offset) {
         int bits = unpackInt(buffer, offset);
@@ -263,12 +350,15 @@ public class PackUtils {
     }
 
     /**
-     * Writes a double in the eight bytes starting at the given position
-     * of the given byte array.
+     * Writes a {@code double} by converting it to its IEEE 754 bit pattern
+     * using {@link Double#doubleToLongBits(double)} and packing the resulting long
+     * to {@code buffer[offset..offset+7]} in Big-Endian order.
      *
-     * @param d the double to be written on the buffer beginning at the position offset
-     * @param buffer the byte array where the double is to be written
-     * @param offset the starting position in the array where the double is written
+     * @param d the double to be written
+     * @param buffer the destination array
+     * @param offset the starting position (must allow eight bytes)
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static void packDouble(double d, byte[] buffer, int offset) {
         long bits = Double.doubleToLongBits(d);
@@ -276,12 +366,15 @@ public class PackUtils {
     }
 
     /**
-     * Reads a double in the eight bytes starting at the given position in the given array.
-     * The double is laid out with the most significant byte first in the array.
+     * Reads a {@code double} by unpacking a long from
+     * {@code buffer[offset..offset+7]} in Big-Endian order and converting with
+     * {@link Double#longBitsToDouble(long)}.
      *
-     * @param buffer the byte array from where the double is to be read
-     * @param offset the position in the array where the double is read
-     * @return the double that has been read
+     * @param buffer the source array
+     * @param offset the starting position (must allow eight bytes)
+     * @return the decoded double
+     * @throws NullPointerException if {@code buffer} is {@code null}
+     * @throws ArrayIndexOutOfBoundsException if there isn’t enough space
      */
     public static double unpackDouble(byte[] buffer, int offset) {
         long bits = unpackLong(buffer, offset);
