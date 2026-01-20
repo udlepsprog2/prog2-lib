@@ -45,6 +45,20 @@ public class GArc extends GObject implements GFillable, GSizeable {
         this.sweepAngle = sweep;
     }
 
+    /**
+     * Creates an arc positioned at the origin (0.0, 0.0) with the given
+     * bounding box size and angle specification. This constructor delegates
+     * to the full constructor that accepts explicit x and y coordinates.
+     *
+     * @param width the width of the bounding box
+     * @param height the height of the bounding box
+     * @param start the starting angle in degrees
+     * @param sweep the angular extent of the arc in degrees
+     */
+    public GArc(double width, double height, double start, double sweep) {
+        this(0.0, 0.0, width, height, start, sweep);
+    }
+
     /** {@inheritDoc} */
     @Override
     void paintComponent(Graphics g) {

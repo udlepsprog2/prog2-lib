@@ -26,9 +26,16 @@ import java.util.Scanner;
  */
 public abstract class CommandLineProgram extends Program {
 
-    // Scanner is now instance-level so tests can replace System.in before
+    // Scanner is instance level, so tests can replace System.in before
     // instantiating a CommandLineProgram and have the scanner read the test input.
     private final Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
+
+    /**
+     * Creates a new command-line program.
+     */
+    protected CommandLineProgram() {
+        super();
+    }
 
     /**
      * Prints the given message without a trailing newline.

@@ -39,6 +39,18 @@ public class GOval extends GObject implements GFillable, GSizeable {
         this.height = height;
     }
 
+    /**
+     * Creates an oval positioned at the origin (0.0, 0.0) with the given size.
+     * This constructor delegates to the full constructor that accepts explicit
+     * x and y coordinates.
+     *
+     * @param width the oval width
+     * @param height the oval height
+     */
+    public GOval(double width, double height) {
+        this(0.0, 0.0, width, height);
+    }
+
     /** {@inheritDoc} */
     @Override
     void paintComponent(Graphics g) {

@@ -81,6 +81,46 @@ public class GCanvas extends JComponent {
     }
 
     /**
+     * Adds a {@link GObject} to this canvas at the specified location
+     * (x, y) if it is not already present.
+     * <p>
+     * When added, the object is appended to the end of the z-order (topmost)
+     * and its canvas reference is set via {@link GObject#setCanvas(GCanvas)}.
+     * A repaint is requested after the change.
+     * </p>
+     *
+     * @param gObj the object to add (must not be {@code null})
+     * @param x the x-coordinate where the object should be placed
+     * @param y the y-coordinate where the object should be placed
+     * @throws NullPointerException if {@code gObj} is {@code null}
+     */
+    public void add(GObject gObj, double x, double y) {
+        Objects.requireNonNull(gObj, "gObj");
+        gObj.setLocation(x, y);
+        add(gObj);
+    }
+
+    /**
+     * Adds a {@link GObject} to this canvas at the specified location
+     * if it is not already present.
+     * <p>
+     * When added, the object is appended to the end of the z-order (topmost)
+     * and its canvas reference is set via {@link GObject#setCanvas(GCanvas)}.
+     * A repaint is requested after the change.
+     * </p>
+     *
+     * @param gObj the object to add (must not be {@code null})
+     * @param gPoint the point where the object should be placed (must not be {@code null})
+     * @throws NullPointerException if {@code gObj} or {@code gPoint} is {@code null}
+     */
+    public void add(GObject gObj, GPoint gPoint) {
+        Objects.requireNonNull(gObj, "gObj");
+        Objects.requireNonNull(gPoint, "gPoint");
+        gObj.setLocation(gPoint);
+        add(gObj);
+    }
+
+    /**
      * Removes a {@link GObject} from this canvas if it is present.
      * <p>
      * When removed, the object is no longer part of this canvas's z-order. A repaint
