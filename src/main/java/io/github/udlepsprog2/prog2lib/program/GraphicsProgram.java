@@ -1,5 +1,6 @@
 package io.github.udlepsprog2.prog2lib.program;
 
+import io.github.udlepsprog2.prog2lib.geometry.GPoint;
 import io.github.udlepsprog2.prog2lib.graphics.GCanvas;
 import io.github.udlepsprog2.prog2lib.graphics.GObject;
 
@@ -137,6 +138,29 @@ public abstract class GraphicsProgram extends Program {
      */
     public void add(GObject gObject) {
         canvas.add(gObject);
+    }
+
+    /**
+     * Adds a graphics object to the canvas at the specified location.
+     *
+     * @param gObject the object to add (must not be {@code null})
+     * @param x the x-coordinate of the object's location
+     * @param y the y-coordinate of the object's location
+     * @throws NullPointerException if {@code gObject} is {@code null}
+     */
+    public void add(GObject gObject, int x, int y) {
+        canvas.add(gObject, x, y);
+    }
+
+    /**
+     * Adds a graphics object to the canvas at the specified location.
+     *
+     * @param gObject the object to add (must not be {@code null})
+     * @param position the location of the object's upper-left corner (must not be {@code null})
+     * @throws NullPointerException if {@code gObject} or {@code position} is {@code null}
+     */
+    public void add(GObject gObject, GPoint position) {
+        canvas.add(gObject, position);
     }
 
     /**
