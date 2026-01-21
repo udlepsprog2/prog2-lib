@@ -323,8 +323,38 @@ class CommandLineProgramTest {
             record Person(String name, int age) {
             }
             Person person = new Person("Alice", 30);
-            new TestProgram().print((Object) person);
+            new TestProgram().print(person);
             assertEquals("Person[name=Alice, age=30]", bout.toString());
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
+
+    @Test
+    void printObjectWritesWithNewline() {
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            System.setOut(new PrintStream(bout));
+            record Person(String name, int age) {
+            }
+            Person person = new Person("Alice", 30);
+            new TestProgram().println(person);
+            assertEquals("Person[name=Alice, age=30]\n", bout.toString());
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
+
+    @Test
+    void printlnNoArgWritesNewline() {
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            System.setOut(new PrintStream(bout));
+            new TestProgram().println();
+            String out = bout.toString();
+            assertTrue(out.equals("\n") || out.equals("\r\n"));
         } finally {
             System.setOut(originalOut);
         }
