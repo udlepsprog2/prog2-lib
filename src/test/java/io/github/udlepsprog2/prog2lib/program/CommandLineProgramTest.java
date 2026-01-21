@@ -285,4 +285,48 @@ class CommandLineProgramTest {
             System.setIn(originalIn);
         }
     }
+
+    @Test
+    void printfFormatsAndWrites() {
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            System.setOut(new PrintStream(bout));
+            new TestProgram().printf("hello %s %d", "world", 42);
+            assertEquals("hello world 42", bout.toString());
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
+
+    @Test
+    void printfAppendsFormattedOutput() {
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            System.setOut(new PrintStream(bout));
+            TestProgram p = new TestProgram();
+            p.printf("%s", "first");
+            p.printf("-%s", "second");
+            assertEquals("first-second", bout.toString());
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
+
+    @Test
+    void printObjectWritesWithoutNewline() {
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            System.setOut(new PrintStream(bout));
+            record Person(String name, int age) {
+            }
+            Person person = new Person("Alice", 30);
+            new TestProgram().print((Object) person);
+            assertEquals("Person[name=Alice, age=30]", bout.toString());
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
 }

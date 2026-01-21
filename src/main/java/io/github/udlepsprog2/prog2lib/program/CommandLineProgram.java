@@ -132,6 +132,45 @@ public abstract class CommandLineProgram extends Program {
     }
 
     /**
+     * Prints a newline.
+     */
+    public void println() {
+        System.out.println();
+    }
+
+    /**
+     * Prints the string representation of the given object without a trailing newline.
+     *
+     * @param obj the object to print (it maybe null)
+     */
+    public void print(Object obj) {
+        System.out.print(obj);
+    }
+
+    /**
+     * Prints the string representation of the given object followed by a newline.
+     *
+     * @param obj the object to print (it may be null)
+     */
+    public void println(Object obj) {
+        System.out.println(obj);
+    }
+
+    /**
+      * Prints a formatted string.
+      *
+      * <p>The format string syntax is specified by {@link java.util.Formatter}; see
+      * the class documentation for details on format specifiers.</p>
+      *
+      * @param format the format string (see {@link java.util.Formatter})
+      * @param args   the arguments referenced by the format specifiers in the format string
+      */
+     public void printf(String format, Object... args) {
+         System.out.printf(format, args);
+     }
+
+
+    /**
      * Prompts the user and reads a boolean value using {@link Scanner#nextBoolean()}.
      *
      * @param prompt the prompt to display before reading
@@ -147,7 +186,7 @@ public abstract class CommandLineProgram extends Program {
      * Prompts the user and reads an entire line using {@link Scanner#nextLine()}.
      *
      * @param prompt the prompt to display before reading
-     * @return the line entered by the user (may be empty)
+     * @return the line entered by the user (it may be empty)
      */
     public String readLine(String prompt) {
         System.out.print(prompt);

@@ -1,4 +1,3 @@
-
 plugins {
     id("java-library")
     id("maven-publish")
@@ -6,7 +5,7 @@ plugins {
 }
 
 group = "io.github.udlepsprog2"
-version = "2026.1-RC4"
+version = "2026.1-RC5"
 
 repositories {
     mavenCentral()
@@ -23,13 +22,10 @@ tasks.test {
 }
 
 tasks.javadoc {
-    // Kotlin DSL; cast to StandardJavadocDocletOptions for more options
-    (options as StandardJavadocDocletOptions).apply {
-        encoding = "UTF-8"
-        charSet = "UTF-8"
-        // Link to JDK 21 API docs
-        links("https://docs.oracle.com/en/java/javase/21/docs/api/")
-    }
+    val stdOptions = options as StandardJavadocDocletOptions
+    stdOptions.encoding = "UTF-8"
+    stdOptions.charSet = "UTF-8"
+    stdOptions.links("https://docs.oracle.com/en/java/javase/21/docs/api/")
 }
 
 java {
