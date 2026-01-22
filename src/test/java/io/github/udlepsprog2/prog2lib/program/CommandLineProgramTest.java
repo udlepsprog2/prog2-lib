@@ -359,4 +359,93 @@ class CommandLineProgramTest {
             System.setOut(originalOut);
         }
     }
+
+    @Test
+    void readLineWithoutPromptReadsFullLine() {
+        String input = "no prompt line" + System.lineSeparator();
+        ByteArrayInputStream bin = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+        PrintStream originalOut = System.out;
+        java.io.InputStream originalIn = System.in;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            System.setIn(bin);
+            System.setOut(new PrintStream(bout));
+
+            TestProgram p = new TestProgram();
+            String result = p.readLine();
+
+            assertEquals("no prompt line", result);
+            assertEquals("", bout.toString());
+        } finally {
+            System.setOut(originalOut);
+            System.setIn(originalIn);
+        }
+    }
+
+    @Test
+    void readIntWithoutPromptReadsInteger() {
+        String input = "7" + System.lineSeparator();
+        ByteArrayInputStream bin = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+        PrintStream originalOut = System.out;
+        java.io.InputStream originalIn = System.in;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            System.setIn(bin);
+            System.setOut(new PrintStream(bout));
+
+            TestProgram p = new TestProgram();
+            int v = p.readInt();
+
+            assertEquals(7, v);
+            assertEquals("", bout.toString());
+        } finally {
+            System.setOut(originalOut);
+            System.setIn(originalIn);
+        }
+    }
+
+    @Test
+    void readDoubleWithoutPromptReadsDouble() {
+        String input = "0.5" + System.lineSeparator();
+        ByteArrayInputStream bin = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+        PrintStream originalOut = System.out;
+        java.io.InputStream originalIn = System.in;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            System.setIn(bin);
+            System.setOut(new PrintStream(bout));
+
+            TestProgram p = new TestProgram();
+            double d = p.readDouble();
+
+            assertEquals(0.5, d, 1e-9);
+            assertEquals("", bout.toString());
+        } finally {
+            System.setOut(originalOut);
+            System.setIn(originalIn);
+        }
+    }
+
+    @Test
+    void readBooleanWithoutPromptReadsBoolean() {
+        String input = "false" + System.lineSeparator();
+        ByteArrayInputStream bin = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+        PrintStream originalOut = System.out;
+        java.io.InputStream originalIn = System.in;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            System.setIn(bin);
+            System.setOut(new PrintStream(bout));
+
+            TestProgram p = new TestProgram();
+            boolean b = p.readBoolean();
+
+            assertFalse(b);
+            assertEquals("", bout.toString());
+        } finally {
+            System.setOut(originalOut);
+            System.setIn(originalIn);
+        }
+    }
 }
+

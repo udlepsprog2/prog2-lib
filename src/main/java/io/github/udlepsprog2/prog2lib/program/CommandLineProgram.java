@@ -183,6 +183,16 @@ public abstract class CommandLineProgram extends Program {
     }
 
     /**
+     * Reads a boolean value using {@link Scanner#nextBoolean()} without prompting.
+     *
+     * @return the boolean value entered by the user
+     * @throws java.util.InputMismatchException if the next token is not a boolean
+     */
+    public boolean readBoolean() {
+        return scanner.nextBoolean();
+    }
+
+    /**
      * Prompts the user and reads an entire line using {@link Scanner#nextLine()}.
      *
      * @param prompt the prompt to display before reading
@@ -190,6 +200,15 @@ public abstract class CommandLineProgram extends Program {
      */
     public String readLine(String prompt) {
         System.out.print(prompt);
+        return scanner.nextLine();
+    }
+
+    /**
+     * Reads an entire line using {@link Scanner#nextLine()} without prompting.
+     *
+     * @return the line entered by the user (it may be empty)
+     */
+    public String readLine() {
         return scanner.nextLine();
     }
 
@@ -206,6 +225,16 @@ public abstract class CommandLineProgram extends Program {
     }
 
     /**
+     * Reads an integer using {@link Scanner#nextInt()} without prompting.
+     *
+     * @return the integer value entered by the user
+     * @throws java.util.InputMismatchException if the next token is not an int
+     */
+    public int readInt() {
+        return scanner.nextInt();
+    }
+
+    /**
      * Prompts the user and reads a double using {@link Scanner#nextDouble()}.
      *
      * @param prompt the prompt to display before reading
@@ -214,6 +243,16 @@ public abstract class CommandLineProgram extends Program {
      */
     public double readDouble(String prompt) {
         System.out.print(prompt);
+        return scanner.nextDouble();
+    }
+
+    /**
+     * Reads a double using {@link Scanner#nextDouble()} without prompting.
+     *
+     * @return the double value entered by the user
+     * @throws java.util.InputMismatchException if the next token is not a double
+     */
+    public double readDouble() {
         return scanner.nextDouble();
     }
 }
