@@ -5,16 +5,16 @@ plugins {
 }
 
 group = "io.github.udlepsprog2"
-version = "2026.1-RC6"
+version = "2026.1-RC7"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:6.0.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.launcher)
 }
 
 tasks.test {
