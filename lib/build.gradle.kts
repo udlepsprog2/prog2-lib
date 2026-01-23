@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "io.github.udlepsprog2"
-version = "2026.1-RC7"
+version = "2026.1-RC8"
 
 repositories {
     mavenCentral()
@@ -38,7 +38,11 @@ mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
     signAllPublications()
 
-    coordinates("io.github.udlepsprog2", "prog2-lib", "2026.1-RC7")
+    coordinates(
+        groupId = project.group.toString(),
+        artifactId = "prog2-lib",
+        version = project.version.toString(),
+    )
 
     pom {
         name.set("prog2-lib")
