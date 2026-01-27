@@ -148,7 +148,7 @@ public abstract class GraphicsProgram extends Program {
      * @param y the y-coordinate of the object's location
      * @throws NullPointerException if {@code gObject} is {@code null}
      */
-    public void add(GObject gObject, int x, int y) {
+    public void add(GObject gObject, double x, double y) {
         canvas.add(gObject, x, y);
     }
 
