@@ -80,6 +80,78 @@ public abstract class CommandLineProgram extends Program {
     }
 
     /**
+     * Prints the byte value without a trailing newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.print(byte)}.
+     * </p>
+     *
+     * @param b the byte value to print
+     */
+    public void print(byte b) {
+        System.out.print(b);
+    }
+
+    /**
+     * Prints the byte value followed by a newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.println(byte)}.
+     * </p>
+     *
+     * @param b the byte value to print
+     */
+    public void println(byte b) {
+        System.out.println(b);
+    }
+
+    /**
+     * Prints the short value without a trailing newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.print(short)}.
+     * </p>
+     *
+     * @param s the short value to print
+     */
+    public void print(short s) {
+        System.out.print(s);
+    }
+
+    /**
+     * Prints the short value followed by a newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.println(short)}.
+     * </p>
+     *
+     * @param s the short value to print
+     */
+    public void println(short s) {
+        System.out.println(s);
+    }
+
+    /**
+     * Prints the character value without a trailing newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.print(char)}.
+     * </p>
+     *
+     * @param c the character value to print
+     */
+    public void print(char c) {
+        System.out.print(c);
+    }
+
+    /**
+     * Prints the character value followed by a newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.println(char)}.
+     * </p>
+     *
+     * @param c the character value to print
+     */
+    public void println(char c) {
+        System.out.println(c);
+    }
+
+    /**
      * Prints the integer value without a trailing newline.
      * <p>
      * Convenience wrapper around {@code System.out.print(int)}.
@@ -101,6 +173,58 @@ public abstract class CommandLineProgram extends Program {
      */
     public void println(int n) {
         System.out.println(n);
+    }
+
+    /**
+     * Prints the long value without a trailing newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.print(long)}.
+     * </p>
+     *
+     * @param l the long value to print
+     */
+    public void print(long l) {
+        System.out.print(l);
+    }
+
+    /**
+     * Prints the long value followed by a newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.println(long)}.
+     * </p>
+     *
+     * @param l the long value to print
+     */
+    public void println(long l) {
+        System.out.println(l);
+    }
+
+    /**
+     * Prints the float value without a trailing newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.print(float)}. Note that
+     * number formatting follows the platform's default conventions; use
+     * {@link java.lang.String#format} if specific formatting is required.
+     * </p>
+     *
+     * @param f the float value to print
+     */
+    public void print(float f) {
+        System.out.print(f);
+    }
+
+    /**
+     * Prints the float value followed by a newline.
+     * <p>
+     * Convenience wrapper around {@code System.out.println(float)}. Note that
+     * number formatting follows the platform's default conventions; use
+     * {@link java.lang.String#format} if specific formatting is required.
+     * </p>
+     *
+     * @param f the float value to print
+     */
+    public void println(float f) {
+        System.out.println(f);
     }
 
     /**
@@ -157,17 +281,17 @@ public abstract class CommandLineProgram extends Program {
     }
 
     /**
-      * Prints a formatted string.
-      *
-      * <p>The format string syntax is specified by {@link java.util.Formatter}; see
-      * the class documentation for details on format specifiers.</p>
-      *
-      * @param format the format string (see {@link java.util.Formatter})
-      * @param args   the arguments referenced by the format specifiers in the format string
-      */
-     public void printf(String format, Object... args) {
-         System.out.printf(format, args);
-     }
+     * Prints a formatted string.
+     *
+     * <p>The format string syntax is specified by {@link java.util.Formatter}; see
+     * the class documentation for details on format specifiers.</p>
+     *
+     * @param format the format string (see {@link java.util.Formatter})
+     * @param args   the arguments referenced by the format specifiers in the format string
+     */
+    public void printf(String format, Object... args) {
+        System.out.printf(format, args);
+    }
 
 
     /**
