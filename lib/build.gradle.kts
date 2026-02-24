@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "io.github.udlepsprog2"
-version = "2026.2-SNAPSHOT"
+version = "2026.3-SNAPSHOT"
 
 repositories {
     mavenCentral()
