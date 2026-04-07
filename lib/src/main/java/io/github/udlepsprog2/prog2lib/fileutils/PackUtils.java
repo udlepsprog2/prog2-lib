@@ -23,7 +23,7 @@ package io.github.udlepsprog2.prog2lib.fileutils;
  * @author jmgimeno
  */
 
-public class PackUtils {
+public final class PackUtils {
 
     /**
      * Size in bytes of a packed boolean value. Booleans are encoded as a single byte: {@code 1} for
@@ -61,6 +61,12 @@ public class PackUtils {
      */
     public static final int SIZEOF_DOUBLE = 8;
 
+    /**
+     * Utility class for packaging-related operations.
+     *
+     * This class is not meant to be instantiated as it only provides static utility methods.
+     * The constructor is private to prevent instantiation.
+     */
     private PackUtils() {
     }
 
@@ -148,7 +154,7 @@ public class PackUtils {
      * @throws NullPointerException           if {@code buffer} is {@code null}
      * @throws ArrayIndexOutOfBoundsException if {@code offset} is out of range
      */
-    public static byte unpackByte(byte[] buffer, int offset) {
+    public static byte unpackByte(byte[] buffer, int offset)  {
         return buffer[offset];
     }
 
@@ -204,7 +210,7 @@ public class PackUtils {
      */
     public static String unpackLimitedString(
             int maxLength, byte[] buffer, int offset) {
-        StringBuilder sb = new StringBuilder(Math.min(maxLength, 16));
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < maxLength; i++) {
             char c = unpackChar(buffer, offset + SIZEOF_CHAR * i);
             if (c != '\0') {
